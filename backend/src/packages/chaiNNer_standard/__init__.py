@@ -10,21 +10,21 @@ package = add_package(
         Dependency(
             display_name="Numpy",
             pypi_name="numpy",
-            version="1.24.4",
-            size_estimate=15 * MB,
+            version="2.2.6",
+            size_estimate=20 * MB,
         ),
         Dependency(
             display_name="OpenCV",
             pypi_name="opencv-python",
-            version="4.8.0.76",
-            size_estimate=30 * MB,
+            version="4.12.0.88",
+            size_estimate=35 * MB,
             import_name="cv2",
         ),
         Dependency(
             display_name="Pillow (PIL)",
             pypi_name="Pillow",
-            version="9.2.0",
-            size_estimate=3 * MB,
+            version="12.0.0",
+            size_estimate=4 * MB,
             import_name="PIL",
         ),
         Dependency(
@@ -44,8 +44,8 @@ package = add_package(
         Dependency(
             display_name="Requests",
             pypi_name="requests",
-            version="2.28.2",
-            size_estimate=452 * KB,
+            version="2.32.5",
+            size_estimate=500 * KB,
         ),
         Dependency(
             display_name="re2",
@@ -57,8 +57,8 @@ package = add_package(
         Dependency(
             display_name="scipy",
             pypi_name="scipy",
-            version="1.9.3",
-            size_estimate=42 * MB,
+            version="1.16.0",
+            size_estimate=45 * MB,
         ),
         Dependency(
             display_name="Wildcard Match",
@@ -70,15 +70,15 @@ package = add_package(
         Dependency(
             display_name="Numba",
             pypi_name="numba",
-            version="0.57.1",
-            size_estimate=2.5 * MB,
+            version="0.63.1",
+            size_estimate=3 * MB,
         ),
         Dependency(
             display_name="PyMatting",
             pypi_name="PyMatting",
             import_name="pymatting",
-            version="1.1.10",
-            size_estimate=52 * KB,
+            version="1.1.14",
+            size_estimate=55 * KB,
         ),
         Dependency(
             display_name="ChaiNNer Extensions",

@@ -110,6 +110,19 @@ package = add_package(
             version="0.2.0",
             size_estimate=83 * KB,
         ),
+        # PepeDP dependencies (for tile extraction, IQA, etc.)
+        Dependency(
+            display_name="PepeDP",
+            pypi_name="pepedp",
+            version="0.1.3",
+            size_estimate=25 * KB,
+        ),
+        Dependency(
+            display_name="Pepeline",
+            pypi_name="pepeline",
+            version="1.0.0",
+            size_estimate=3 * MB,
+        ),
     ],
     icon="PyTorch",
     color="#DD6B20",
@@ -121,6 +134,13 @@ pytorch_category = package.add_category(
     icon="PyTorch",
     color="#DD6B20",
     install_hint=inst_hint,
+)
+
+pepedp_category = package.add_category(
+    name="PepeDP",
+    description="Data processing tools for ML dataset preparation: tile extraction, deduplication, IQA filtering.",
+    icon="BsGrid3X3",
+    color="#E57373",
 )
 
 logger.debug("Loaded package %s", package.name)
