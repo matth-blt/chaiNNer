@@ -61,7 +61,6 @@ class ComplexityMethod(Enum):
             "The complexity score of the extracted tile. Higher values indicate more detail/information."
         ),
     ],
-    side_effects=True,  # Requires output to be connected
 )
 def best_tile_node(
     img: np.ndarray,

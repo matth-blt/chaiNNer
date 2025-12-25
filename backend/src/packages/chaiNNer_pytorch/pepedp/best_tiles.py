@@ -81,11 +81,44 @@ def best_tiles_node(
     tile_size: int,
     method: ComplexityMethod,
     threshold: float,
-    median_blur: int,
+    median_blur: int = 5,
 ) -> Transformer[np.ndarray, tuple[np.ndarray, float]]:
     """Extract multiple tiles from each image that meet the threshold."""
     from pepedp.scripts.utils.complexity.laplacian import LaplacianComplexity
-    from pepeline import best_tile
+
+    # Python implementation of best_tile to avoid NumPy 2.x compatibility issues with pepeline
+    def find_best_tile_position(complexity_map: np.ndarray, tile_sz: int) -> tuple[int, int]:
+        """Find the position of the tile with highest average complexity.
+
+        This is a pure Python/NumPy replacement for pepeline.best_tile() which
+        doesn't work with NumPy 2.x due to ABI incompatibility.
+
+        Uses scipy's uniform_filter for fast sliding window computation.
+        """
+        from scipy.ndimage import uniform_filter
+
+        h, w = complexity_map.shape
+        if h < tile_sz or w < tile_sz:
+            return 0, 0
+
+        # Use uniform_filter to compute the average over tile_sz x tile_sz windows
+        # This is much faster than nested for loops
+        avg_complexity = uniform_filter(complexity_map, size=tile_sz, mode='constant')
+
+        # Find the position with maximum average complexity
+        # We need to offset by tile_sz//2 because uniform_filter is centered
+        half_tile = tile_sz // 2
+        valid_h = h - tile_sz + 1
+        valid_w = w - tile_sz + 1
+
+        # Extract the valid region (positions where we can place a full tile)
+        valid_region = avg_complexity[half_tile:half_tile+valid_h, half_tile:half_tile+valid_w]
+
+        # Find the maximum
+        max_idx = np.argmax(valid_region)
+        best_y, best_x = np.unravel_index(max_idx, valid_region.shape)
+
+        return int(best_y), int(best_x)
 
     # Create the complexity function once (reused for all images)
     if method == ComplexityMethod.LAPLACIAN:
@@ -123,6 +156,9 @@ def best_tiles_node(
 
         # Calculate the complexity map
         complexity = complexity_fn(img_rgb)
+        # Convert to float to allow PepeDP to mark extracted regions with -1
+        # (NumPy 2.x doesn't allow assigning -1 to uint8 arrays)
+        complexity = complexity.astype(np.float32)
 
         # Calculate max number of tiles (dynamic_n_tiles formula from PepeDP)
         # n_tiles = (H*W) / (tile_size^2 * 2)
@@ -131,7 +167,7 @@ def best_tiles_node(
 
         for _ in range(max_tiles):
             # Find the best remaining position
-            y, x = best_tile(complexity, tile_size)
+            y, x = find_best_tile_position(complexity, tile_size)
 
             # Extract the tile and its score
             # Note: get_tile_comp_score modifies complexity in-place (sets region to -1)
